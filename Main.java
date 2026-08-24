@@ -26,7 +26,7 @@ public class Main{
 
     public static void criarTela() {
         // Tela principal
-        JFrame frame = new JFrame("Analisador de Código");
+        JFrame frame = new JFrame("Analisador Lexico");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
@@ -104,10 +104,10 @@ public class Main{
             }else{
                 String texto = getTexto();
                 areaConteudo.setText(texto);
-                //analisador = new AnalisadorLexico(texto);
-                //ArrayList<Linha> linhas = analisador.classificarTolkens();
-                //imprimirArquivo(linhas);
-                //mostraErro(linhas, 0);
+                analisador = new AnalisadorLexico(texto);
+                ArrayList<Linha> linhas = analisador.classificarTolkens();
+                imprimirArquivo(linhas);
+                mostraErro(linhas, 0);
             }
             
         });
@@ -151,6 +151,8 @@ public class Main{
     }
 
     public static void imprimirArquivo(ArrayList<Linha> linhas){
-
+        for(Linha l: linhas){
+            scrollPane.add(l.gerarLinha());
+        }
     }
 }
