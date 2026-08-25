@@ -55,6 +55,10 @@ public class Linha{
         return erro;
     }
 
+    public int getNum(){
+        return num;
+    }
+
     public void destacarLinha(){
         refLinha.setBackground(Color.decode("#ee4141"));
     }

@@ -14,7 +14,7 @@ public class Main{
     private static JPanel areaConteudo;
     private static JLabel lblTitulo;
 
-    private static String texto;
+    private static StringBuilder texto;
     private static ArrayList<Linha> linhasComErro;
     private static int contErro=0;
 
@@ -128,7 +128,6 @@ public class Main{
                     btnProximoErro.setEnabled(true);
                     mostraErro(linhasComErro, 0);
                 }
-                
             }
             
         });
@@ -174,15 +173,15 @@ public class Main{
         
     }
 
-    public static String getTexto(){
-        String texto= "";
+    public static StringBuilder getTexto(){
+        StringBuilder texto= new StringBuilder("");
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoAtual))) {
 
             String linha;
             int cont=1;
             while ((linha = br.readLine()) != null) {
                 areaConteudo.add(gerarLinha(cont++, linha));
-                texto += linha +"\n";
+                texto.append( linha +"\n");
             }
 
         } catch (IOException e) {

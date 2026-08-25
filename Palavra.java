@@ -11,17 +11,30 @@ public class Palavra {
         this.token = token;
     }
 
-    public JLabel criaLabel(){
-        JLabel novo = new JLabel(lexema);
-        novo.setForeground(Color.decode(corToken()));
-        return novo;
+    public Palavra(){
+        lexema=null;
+        token="\n";
     }
 
-    public void getTolken() throws Exception{
-        if(token.equals("identificador invalido")) 
+    public JLabel criaLabel(){
+
+        if(lexema!=null ){
+            JLabel novo = new JLabel(lexema);
+            novo.setForeground(Color.decode(corToken()));
+            novo.setToolTipText(token);
+            return novo;
+        }else{
+            return null;
+        }
+        
+    }
+
+    public String getTolken(){
+        /*if(token.equals("identificador invalido")) 
             throw new Exception(token);
         if(token.equals("caractere desconhecido"))
-            throw new Exception(token);
+            throw new Exception(token);*/
+        return token;
     } 
 
     public String corToken(){
