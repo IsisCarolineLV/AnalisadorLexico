@@ -11,7 +11,12 @@ public class Main{
     private static String caminhoAtual="";
     private static AnalisadorLexico analisador;
     private static JLabel areaErro;
-    private static JScrollPane scrollPane;
+    private static JPanel areaConteudo;
+    private static JLabel lblTitulo;
+
+    private static String texto;
+    private static ArrayList<Linha> linhasComErro;
+    private static int contErro=0;
 
     //botoes:
     private static JButton btnPesquisar;
@@ -42,6 +47,7 @@ public class Main{
         
         btnPesquisar = new JButton("Pesquisar");
         btnAnalisar = new JButton("Analisar");
+        btnAnalisar.setEnabled(false);
 
         btnErroAnterior = new JButton("⬆ Erro Anterior");
         btnErroAnterior.setEnabled(false);
@@ -60,13 +66,16 @@ public class Main{
         organizadorH.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
         // titulo do arquivo
-        JLabel lblTitulo = new JLabel("Arquivo: nenhum arquivo selecionado");
+        lblTitulo = new JLabel("Arquivo: nenhum arquivo selecionado");
         lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 14));
         lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // ScrollPane
-        JTextArea areaConteudo = new JTextArea("O conteudo do arquivo aparecera aqui...");
-        scrollPane = new JScrollPane(areaConteudo);
+        areaConteudo = new JPanel();
+        areaConteudo.setLayout(new BoxLayout(areaConteudo, BoxLayout.Y_AXIS));
+        areaConteudo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        JScrollPane scrollPane = new JScrollPane(areaConteudo);
         scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Pane normal para aparecer o erro
@@ -94,22 +103,39 @@ public class Main{
 
         //listeners
         btnPesquisar.addActionListener(e ->{
-            chamarTelaPesquisa();
-            System.out.println("Caminho lido:" +caminhoAtual);
+            String t = chamarTelaPesquisa();
+            if(!t.equals("nenhum arquivo selecionado")){
+                areaConteudo.removeAll();
+                lblTitulo.setText("Arquivo: "+t);
+                //System.out.println("Caminho lido:" +caminhoAtual);
+                texto = getTexto();
+            }
+            btnAnalisar.setEnabled(true);
         });
 
         btnAnalisar.addActionListener(e->{
             if(caminhoAtual.equals("")){
                 areaErro.setText("Nenhum arquivo selecionado!");
             }else{
-                String texto = getTexto();
-                areaConteudo.setText(texto);
                 analisador = new AnalisadorLexico(texto);
                 ArrayList<Linha> linhas = analisador.classificarTolkens();
+                linhasComErro = analisador.getLinhasErradas();
                 imprimirArquivo(linhas);
-                mostraErro(linhas, 0);
+                mostraErro(linhasComErro, contErro);
+                btnErroAnterior.setEnabled(true);
+                btnProximoErro.setEnabled(true);
             }
             
+        });
+
+        btnProximoErro.addActionListener(e->{
+            contErro++;
+            mostraErro(linhasComErro, contErro);
+        });
+
+        btnErroAnterior.addActionListener(e->{
+            contErro--;
+            mostraErro(linhasComErro, contErro);
         });
     }
     
@@ -117,12 +143,15 @@ public class Main{
     private static void mostraErro(ArrayList<Linha> linhas, int i) {
         if (i >= 0 && i < linhas.size()) {
             areaErro.setText(linhas.get(i).getErro());
+            linhas.get(i).destacarLinha();  //destaca linha atual
+            if(i>0) linhas.get(i-1).normalizaLinha();   //retorna a anteriormente destacada para a cor normal
+            if(i<linhas.size()-1) linhas.get(i+1).normalizaLinha();   //retorna a anteriormente destacada para a cor normal
             btnErroAnterior.setEnabled(i > 0);
             btnProximoErro.setEnabled(i < linhas.size() - 1);
         }
     }
 
-    public static void chamarTelaPesquisa() {
+    public static String chamarTelaPesquisa() {
         JFileChooser fileChooser = new JFileChooser();
 
         int resultado = fileChooser.showOpenDialog(null);
@@ -131,7 +160,12 @@ public class Main{
             File arquivo = fileChooser.getSelectedFile();
 
             caminhoAtual = arquivo.getAbsolutePath();
+
+            return fileChooser.getSelectedFile().getName();
         }
+
+        return "nenhum arquivo selecionado";
+        
     }
 
     public static String getTexto(){
@@ -139,20 +173,43 @@ public class Main{
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoAtual))) {
 
             String linha;
-
+            int cont=1;
             while ((linha = br.readLine()) != null) {
+                areaConteudo.add(gerarLinha(cont++, linha));
                 texto += linha +"\n";
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        areaConteudo.revalidate();
+        areaConteudo.repaint();
+
         return texto;
     }
 
     public static void imprimirArquivo(ArrayList<Linha> linhas){
+        areaConteudo.removeAll();
         for(Linha l: linhas){
-            scrollPane.add(l.gerarLinha());
+            areaConteudo.add(l.gerarLinha());
         }
+    }
+
+    public static JPanel gerarLinha(int num, String conteudo){
+        JPanel novaLinha = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+
+        JLabel numeroLinha = new JLabel(String.valueOf(num));
+        JLabel texto = new JLabel(conteudo);
+
+        novaLinha.add(numeroLinha);
+        novaLinha.add(texto);
+
+        novaLinha.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        Dimension tamanho = novaLinha.getPreferredSize();
+        novaLinha.setMaximumSize(new Dimension(Integer.MAX_VALUE, tamanho.height));
+        
+        return novaLinha;
+
     }
 }

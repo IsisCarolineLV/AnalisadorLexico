@@ -13,6 +13,7 @@ public class Linha{
     private int num;
     private ArrayList<Palavra> palavras;
     private boolean certo;
+    private JPanel refLinha;
 
     private String erro="";
 
@@ -42,6 +43,7 @@ public class Linha{
         if(!certo){
             novaLinha.setBackground(Color.decode("#eb7c7c"));
         }
+        refLinha = novaLinha;
         return novaLinha;
     }
 
@@ -51,6 +53,14 @@ public class Linha{
 
     public String getErro() {
         return erro;
+    }
+
+    public void destacarLinha(){
+        refLinha.setBackground(Color.decode("#ee4141"));
+    }
+
+    public void normalizaLinha(){
+        refLinha.setBackground(Color.decode("#eb7c7c"));
     }
 
 }

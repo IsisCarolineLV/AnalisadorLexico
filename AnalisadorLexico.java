@@ -16,5 +16,10 @@ public class AnalisadorLexico {
     public ArrayList<Linha> geradorLinhas(ArrayList<Palavra> palavras){
         return null;
     }
+
+    public ArrayList<Linha> getLinhasErradas() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getLinhasErradas'");
+    }
     
 }

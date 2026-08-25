@@ -13,7 +13,7 @@ public class Palavra {
 
     public JLabel criaLabel(){
         JLabel novo = new JLabel(lexema);
-        novo.setBackground(Color.decode(corToken()));
+        novo.setForeground(Color.decode(corToken()));
         return novo;
     }
 
