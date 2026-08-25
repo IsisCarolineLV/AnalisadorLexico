@@ -14,12 +14,13 @@ public class AnalisadorLexico {
     }
 
     public ArrayList<Linha> geradorLinhas(ArrayList<Palavra> palavras){
-        return null;
+        ArrayList<Linha> linhas = new ArrayList<>();
+        return linhas;
     }
 
     public ArrayList<Linha> getLinhasErradas() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLinhasErradas'");
+        ArrayList<Linha> linhasErradas = new ArrayList<>();
+        return linhasErradas;
     }
     
 }

@@ -121,9 +121,14 @@ public class Main{
                 ArrayList<Linha> linhas = analisador.classificarTolkens();
                 linhasComErro = analisador.getLinhasErradas();
                 imprimirArquivo(linhas);
-                mostraErro(linhasComErro, contErro);
-                btnErroAnterior.setEnabled(true);
-                btnProximoErro.setEnabled(true);
+                contErro=0;
+                
+                if(linhasComErro.size()>=1){
+                    btnErroAnterior.setEnabled(true);
+                    btnProximoErro.setEnabled(true);
+                    mostraErro(linhasComErro, 0);
+                }
+                
             }
             
         });
@@ -141,7 +146,8 @@ public class Main{
     
 
     private static void mostraErro(ArrayList<Linha> linhas, int i) {
-        if (i >= 0 && i < linhas.size()) {
+        if (i >= 0 && i < linhas.size() && linhas.size()>0) {
+            System.out.println("OIIIIIIIIIi");
             areaErro.setText(linhas.get(i).getErro());
             linhas.get(i).destacarLinha();  //destaca linha atual
             if(i>0) linhas.get(i-1).normalizaLinha();   //retorna a anteriormente destacada para a cor normal
