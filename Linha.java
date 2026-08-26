@@ -15,22 +15,19 @@ public class Linha{
     private boolean certo;
     private JPanel refLinha;
 
-    private String erro="";
+    private String erro;
 
     public Linha (int num, ArrayList<Palavra> palavras){
         this.num=num;
         this.palavras = palavras;
         certo=true;
-        for(Palavra p: palavras){
-            try{
-                p.getTolken();
-            }catch (Exception e){
-                certo = false;
-                erro += e.toString()+ "\n";
-            }
-        }
+        erro="";
     }
-
+    
+    public void setErro(String erro){
+        certo=false;
+        this.erro += erro;
+    }
     public JPanel gerarLinha(){
         JPanel novaLinha = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)); 
         novaLinha.setAlignmentX(Component.LEFT_ALIGNMENT); 

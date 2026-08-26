@@ -13,7 +13,7 @@ public class Palavra {
 
     public Palavra(){
         lexema=null;
-        token="\n";
+        token="ESPACO";
     }
 
     public JLabel criaLabel(){
@@ -29,11 +29,9 @@ public class Palavra {
         
     }
 
-    public String getTolken(){
-        /*if(token.equals("identificador invalido")) 
-            throw new Exception(token);
-        if(token.equals("caractere desconhecido"))
-            throw new Exception(token);*/
+    public String getTolken() throws Exception{
+        if(token.equals("identificador invalido")) 
+            throw new Exception(token+": "+lexema);
         return token;
     } 
 

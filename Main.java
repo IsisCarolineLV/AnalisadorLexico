@@ -79,6 +79,7 @@ public class Main{
         scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Pane normal para aparecer o erro
+        
         JPanel paneErro = new JPanel(new BorderLayout());
         paneErro.setBorder(BorderFactory.createTitledBorder("Painel de Erro"));
         areaErro = new JLabel("Nenhum erro encontrado.");
@@ -146,7 +147,6 @@ public class Main{
 
     private static void mostraErro(ArrayList<Linha> linhas, int i) {
         if (i >= 0 && i < linhas.size() && linhas.size()>0) {
-            System.out.println("OIIIIIIIIIi");
             areaErro.setText(linhas.get(i).getErro());
             linhas.get(i).destacarLinha();  //destaca linha atual
             if(i>0) linhas.get(i-1).normalizaLinha();   //retorna a anteriormente destacada para a cor normal

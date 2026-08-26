@@ -8,6 +8,7 @@ public class AnalisadorLexico {
 
     public AnalisadorLexico(StringBuilder texto) {
         this.texto = texto;
+        System.out.println("TEXTO:\n"+texto.toString());
         i=0;
     }
 
@@ -15,30 +16,35 @@ public class AnalisadorLexico {
         ArrayList<Palavra> palavras = new ArrayList<>();
 
         int tamanho = texto.length();
-        System.out.println("Tamanho: "+tamanho);
         i=0;
         while(i<tamanho-1){
             
             Palavra novaPalavra = null;
             char c = texto.charAt(i);
-            System.out.println("Analisando "+c+"\ti="+i);
+
             if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
                 novaPalavra=achouIdentificador();
             else if(c>='0' && c<='9')
                 novaPalavra = achouNumeral();
-            else if(c=='\\' && texto.charAt(i+1)=='n'){
+            else if(c=='\n'){
                 novaPalavra = new Palavra();
-                i+=2;
-            }else{
+                i++;
+            }else if(c==' '){
                 i++; continue;
+            }else{
+                novaPalavra = new Palavra(c+"", "identificador invalido");
+                i++;
             }
             if(novaPalavra!=null)
                 palavras.add(novaPalavra);
         }
 
-        System.out.println("SAIUUUUUUu "+ palavras.size());
-
-        for(Palavra p: palavras) System.out.println(p.lexema+":"+p.token);
+        /*/imprimindo:
+        System.out.println("------------------------------------------");
+        for(Palavra p: palavras){
+            System.out.println(p.lexema+": "+p.token);
+        }
+        System.out.println("------------------------------------------");*/
 
         return geradorLinhas(palavras);
     }
@@ -118,19 +124,38 @@ public class AnalisadorLexico {
         ArrayList<Linha> linhas = new ArrayList<>();
         ArrayList<Palavra> palavrasLinha = new ArrayList<>();
         int cont=1;
+        boolean erroNaLinha=false;
+        Linha l =null;
+        String mensagemErro="";
+
         for(Palavra p: palavras){
             try {
-                
-                if(p.getTolken().equals("\n")){
-                    Linha l = new Linha(cont++, palavrasLinha);
+                if(p.getTolken().equals("ESPACO")){
+                    l = new Linha(cont++, palavrasLinha);
                     linhas.add(l);
+                    if(erroNaLinha){
+                        l.setErro(mensagemErro);
+                        mensagemErro = "";
+                        linhasErradas.add(l);
+                        erroNaLinha=false;
+                    }
                 }else{
                     palavrasLinha.add(p);
                 }
             } catch (Exception e) {
-                //linhasErradas.add(l);
+                erroNaLinha = true;
+                palavrasLinha.add(p);
+                mensagemErro+=e.getMessage()+"\n";
             }
         }
+
+        if(erroNaLinha){
+            l.setErro(mensagemErro);
+            linhasErradas.add(l);
+        }
+        
+        System.out.println("Achou "+linhasErradas.size()+" erros");
+        for(Linha a: linhasErradas){ System.out.println("Erro:\n"+a.getErro());};
 
         return linhas;
     }
