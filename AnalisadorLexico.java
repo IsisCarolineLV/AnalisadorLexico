@@ -8,7 +8,7 @@ public class AnalisadorLexico {
 
     public AnalisadorLexico(StringBuilder texto) {
         this.texto = texto;
-        System.out.println("TEXTO:\n"+texto.toString());
+        //System.out.println("TEXTO:\n"+texto.toString());
         i=0;
     }
 
@@ -162,8 +162,8 @@ public class AnalisadorLexico {
             }
         }
         
-        System.out.println("Achou "+linhasErradas.size()+" erros");
-        for(Linha a: linhasErradas){ System.out.println("Erro:\n"+a.getErro());};
+        //System.out.println("Achou "+linhasErradas.size()+" erros");
+        //for(Linha a: linhasErradas){ System.out.println("Erro:\n"+a.getErro());};
 
         return linhas;
     }
