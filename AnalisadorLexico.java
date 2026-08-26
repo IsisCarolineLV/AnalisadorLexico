@@ -139,19 +139,27 @@ public class AnalisadorLexico {
                         linhasErradas.add(l);
                         erroNaLinha=false;
                     }
+                    palavrasLinha = new ArrayList<>();
+
                 }else{
                     palavrasLinha.add(p);
                 }
             } catch (Exception e) {
                 erroNaLinha = true;
                 palavrasLinha.add(p);
-                mensagemErro+=e.getMessage()+"\n";
+                mensagemErro+="  ------ "+e.getMessage();
             }
         }
 
-        if(erroNaLinha){
-            l.setErro(mensagemErro);
-            linhasErradas.add(l);
+        if(!palavrasLinha.isEmpty()){
+
+            l = new Linha(cont++, palavrasLinha);
+            linhas.add(l);
+
+            if(erroNaLinha){
+                l.setErro(mensagemErro);
+                linhasErradas.add(l);
+            }
         }
         
         System.out.println("Achou "+linhasErradas.size()+" erros");
