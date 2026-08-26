@@ -22,8 +22,25 @@ public class Palavra {
         if(lexema!=null ){
             JLabel novo = new JLabel(lexema);
             novo.setForeground(Color.decode(corToken()));
-            novo.setToolTipText(token);
+            //novo.setToolTipText(token);
             //novo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            novo.setToolTipText(
+                "<html>Lexema: " + lexema +
+                "<br>Token: " + token + "</html>"
+            );
+
+            novo.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent e) {
+                    novo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent e) {
+                    novo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                }
+            });
 
             return novo;
         }else{
