@@ -194,11 +194,15 @@ public class Main{
     }
 
     public static void imprimirArquivo(ArrayList<Linha> linhas){
-        areaConteudo.removeAll();
-        for(Linha l: linhas){
-            areaConteudo.add(l.gerarLinha());
-        }
+    areaConteudo.removeAll();
+
+    for(Linha l : linhas){
+        areaConteudo.add(l.gerarLinha());
     }
+
+    areaConteudo.revalidate();
+    areaConteudo.repaint();
+}
 
     public static JPanel gerarLinha(int num, String conteudo){
         JPanel novaLinha = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));

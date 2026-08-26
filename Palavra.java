@@ -1,5 +1,6 @@
 import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
 public class Palavra {
@@ -22,6 +23,8 @@ public class Palavra {
             JLabel novo = new JLabel(lexema);
             novo.setForeground(Color.decode(corToken()));
             novo.setToolTipText(token);
+            //novo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
             return novo;
         }else{
             return null;
@@ -40,7 +43,10 @@ public class Palavra {
         if(token.equals("palavra reservada")) return "#c0bd00";
         if(token.equals("comentario")) return "#035f0a";
         if(token.equals("string")) return "#b06b04";
-        if(token.equals("numero") || token.equals("caractere especial")) return "#8400a8";
+        if(token.equals("inteiro") || 
+        token.equals("flutuante") ||
+        token.equals("notacao cientifica") ||
+        token.equals("caractere especial")) return "#8400a8";
         return "#1d0505";
     }
 }

@@ -1,4 +1,5 @@
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 
@@ -29,17 +30,24 @@ public class Linha{
         this.erro += erro;
     }
     public JPanel gerarLinha(){
-        JPanel novaLinha = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)); 
+        JPanel novaLinha = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0)); 
         novaLinha.setAlignmentX(Component.LEFT_ALIGNMENT); 
-        JLabel numeroLinha = new JLabel(num+"");
+        JLabel numeroLinha = new JLabel(num+"- ");
         novaLinha.add(numeroLinha);
         novaLinha.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         for(Palavra p: palavras){
             novaLinha.add(p.criaLabel());
+            
         }
         if(!certo){
             novaLinha.setBackground(Color.decode("#eb7c7c"));
         }
+
+        Dimension tamanho = novaLinha.getPreferredSize();
+        novaLinha.setMaximumSize(
+            new Dimension(Integer.MAX_VALUE, tamanho.height)
+        );
+
         refLinha = novaLinha;
         return novaLinha;
     }
