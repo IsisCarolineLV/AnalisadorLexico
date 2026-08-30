@@ -31,22 +31,79 @@ public class AnalisadorLexico {
                 i++;
             }else if(c==' '){
                 i++; continue;
-            }else{
-                novaPalavra = new Palavra(c+"", "identificador invalido");
-                i++;
+            }else { 
+                novaPalavra = achouSimbolo(); 
             }
             if(novaPalavra!=null)
                 palavras.add(novaPalavra);
         }
 
-        /*/imprimindo:
+        //imprimindo:
         System.out.println("------------------------------------------");
         for(Palavra p: palavras){
             System.out.println(p.lexema+": "+p.token);
         }
-        System.out.println("------------------------------------------");*/
+        System.out.println("------------------------------------------");
 
         return geradorLinhas(palavras);
+    }
+
+    private Palavra achouSimbolo() {
+        char c = texto.charAt(i);
+        //atribuicao
+        if (c == ':' && i + 1 < texto.length() && texto.charAt(i + 1) == '=') { 
+            i += 2; 
+            return new Palavra(":=", "atribuição"); 
+        }
+
+        //relacionais
+        if (c == '>') { 
+            if (i + 1 < texto.length() && texto.charAt(i + 1) == '=') { //confere se eh >=
+                i += 2; return new Palavra(">=", "operador relacional"); 
+            } else { 
+                i++; return new Palavra(">", "operador relacional"); 
+            }
+        } 
+        if (c == '<') {
+            if (i + 1 < texto.length()) { 
+                char proximo = texto.charAt(i + 1); 
+                if (proximo == '=') { //confere se eh >=
+                    i += 2; 
+                    return new Palavra("<=", "operador relacional"); 
+                } else if (proximo == '>') { //confere se eh !=
+                    i += 2; 
+                    return new Palavra("<>", "operador relacional"); 
+                }
+            } 
+            i++; 
+            return new Palavra("<", "operador relacional"); 
+        } 
+        if (c == '=') {
+            i++; 
+            return new Palavra("=", "operador relacional"); 
+        }
+
+        //aritmetico
+        if (c == '+' || c == '-' || c == '*' || c == '/') { 
+            i++; 
+            return new Palavra(c+"", "operador aritmetico"); 
+        } 
+
+        //especiais
+        if (c == '(' || c == ')' || c == ',' || c == ';' || c == ':') { 
+            i++; 
+            return new Palavra(c+"", "símbolo especial"); 
+        } 
+
+        //fim
+        if (c == '.') {
+            i++; 
+            return new Palavra(".", "fim"); 
+        }
+
+        //se chegou ate aqui nao eh nenhum caractere resconhecido
+        i++; 
+        return new Palavra(c + "", "identificador invalido");
     }
 
     private Palavra achouNumeral() {
