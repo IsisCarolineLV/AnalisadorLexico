@@ -13,8 +13,6 @@ public class AnalisadorLexico {
         "SHL", "SHR", "STRING", "THEN", "TO", "TYPE", "UNIT", "UNTIL", "USES",
         "VAR", "WHILE", "WITH", "XOR", "READ", "WRITE", "WRITELN"};
 
-    private static String[] operacoesLogicas = {"and", "or", "not"};
-
     public AnalisadorLexico(StringBuilder texto) {
         this.texto = texto;
         //System.out.println("TEXTO:\n"+texto.toString());
@@ -42,6 +40,10 @@ public class AnalisadorLexico {
                 i++; continue;
             }else if(c=='/'){
                 novaPalavra = achouComentario(palavras);
+            }else if(c=='"'){
+                novaPalavra = achouString(palavras);
+            }else if(c=='\''){
+                novaPalavra = achouString(palavras);
             }else { 
                 novaPalavra = achouSimbolo(); 
             }
@@ -57,6 +59,47 @@ public class AnalisadorLexico {
         System.out.println("------------------------------------------");
 
         return geradorLinhas(palavras);
+    }
+
+    private Palavra achouString(ArrayList<Palavra> palavras) {
+        ArrayList<Palavra> stringGrande = new ArrayList<>();
+        String lexema = "\"";
+        boolean saiuNormal=false;
+        int iInicial =i;
+        i++;
+            
+        while (i < texto.length()) {
+            char c = texto.charAt(i);
+            
+            // Verifica se achou o fechamento */
+            if (c=='"') {
+                lexema += "\"";
+                i ++;
+                saiuNormal=true;
+                break;
+            }
+
+            if (c == '\n') {
+                if (!lexema.isEmpty()) {
+                    stringGrande.add(new Palavra(lexema, "string"));
+                }
+
+                stringGrande.add(new Palavra()); 
+                
+                lexema = ""; // Reseta o lexema para a próxima linha do comentário
+                i++;
+            } else {
+                lexema += c;
+                i++;
+            }
+        }
+        if (!lexema.isEmpty() && saiuNormal) {
+            if(stringGrande.size()>0) palavras.addAll(stringGrande);
+            return new Palavra(lexema, "string");
+        }
+            i = iInicial +1;
+            // Se nao for string, entao ah um identificador invalido
+        return new Palavra("\"", "identificador invalido");
     }
 
     private Palavra achouComentario(ArrayList<Palavra> palavras) {
