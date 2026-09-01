@@ -52,6 +52,7 @@ public class Palavra {
         if(token.equals("palavra reservada")) return "#e3c502";
         if(token.equals("comentario")) return "#0e8b19";
         if(token.equals("string")) return "#fc8211";
+        if(token.equals("char")) return "#f69b47";
         if(token.equals("inteiro") || 
         token.equals("flutuante") ||
         token.equals("notacao cientifica") ||

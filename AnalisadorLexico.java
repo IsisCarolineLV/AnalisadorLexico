@@ -43,7 +43,7 @@ public class AnalisadorLexico {
             }else if(c=='"'){
                 novaPalavra = achouString(palavras);
             }else if(c=='\''){
-                novaPalavra = achouString(palavras);
+                novaPalavra = achouChar();
             }else { 
                 novaPalavra = achouSimbolo(); 
             }
@@ -59,6 +59,21 @@ public class AnalisadorLexico {
         System.out.println("------------------------------------------");
 
         return geradorLinhas(palavras);
+    }
+
+    private Palavra achouChar() {
+        Palavra nova = null;
+        i++;
+        if(texto.charAt(i+1)=='\''){
+            nova = new Palavra("\'"+texto.charAt(i)+"\'", "char");
+            i+=2;
+        }else if(texto.charAt(i)=='\\'){
+            nova = new Palavra("\'"+texto.charAt(i)+texto.charAt(i+1)+"\'", "char");
+            i+=3;
+        }else{
+            nova = new Palavra("\'", "identificador invalido");
+        }
+        return nova;
     }
 
     private Palavra achouString(ArrayList<Palavra> palavras) {
