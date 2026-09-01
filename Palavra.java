@@ -53,9 +53,9 @@ public class Palavra {
         if(token.equals("comentario")) return "#0e8b19";
         if(token.equals("string")) return "#fc8211";
         if(token.equals("char")) return "#f69b47";
-        if(token.equals("inteiro") || 
-        token.equals("flutuante") ||
-        token.equals("notacao cientifica") ||
+        if(token.equals("numero inteiro") || 
+        token.equals("numero real") ||
+        token.equals("numero em notacao cientifica") ||
         token.equals("caractere especial")) return "#8400a8";
         return "#1d0505";
     }

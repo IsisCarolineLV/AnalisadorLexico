@@ -224,55 +224,69 @@ public class AnalisadorLexico {
     }
 
     private Palavra achouNumeral() {
-        Palavra novoNum = null;
-        String lexema = texto.charAt(i)+"";
-        int aux=i+1;
-        char estado='i';    //finais: i=inteiro n= notacao cientifica acabada f=float
-                            //nao finais: c=cientifico nao acabado
+        String lexema = "";
+        char estado = 'i'; // i: inteiro, p: ponto lido, f: flutuante, c: char_cientifico, s: sinal_expoente, n: notacao_concluida
 
-        //notacao cientifica inteira
-        char c = texto.charAt(aux);
+        while (i < texto.length()) {
+            char c = texto.charAt(i);
 
-        if(texto.length()-aux>4 && 
-            texto.charAt(aux)=='x' && 
-            texto.charAt(aux+1)=='1' && 
-            texto.charAt(aux+2)=='0' &&
-            texto.charAt(aux+3)=='e'){
-                lexema+= "x10e";
+            if (c >= '0' && c <= '9') {
+                lexema += c;
+                if (estado == 'c' || estado == 's') { 
+                    estado = 'n'; 
+                } else if (estado == 'p') {
+                    estado = 'f'; 
+                }
+                i++;
+            } 
+            else if (c == '.' && estado == 'i') {
+                if (i + 1 < texto.length() && texto.charAt(i + 1) == '.') {
+                    break;
+                }
+                lexema += c;
+                estado = 'p';
+                i++;
+            } 
+            else if ((c == 'e' || c == 'E') && (estado == 'i' || estado == 'f')) {
+                lexema += c;
                 estado = 'c';
-        }
-
-        //falta logica de float com notacao cientifica
-
-        while(aux<texto.length()){
-            c = texto.charAt(aux);
-            if(c>='0' && c<='9'){
-                lexema+= texto.charAt(aux);
-                if(estado=='c') estado = 'n';
-            }else if(c=='.' && estado=='i'){
-                lexema+= texto.charAt(aux);
-                estado = 'f';
-            }else{
-                break;
+                i++;
+            } 
+            else if (c == 'x' && (estado == 'i' || estado == 'f')) {
+                // A sua notação customizada: x10e
+                if (i + 3 < texto.length() && 
+                    texto.charAt(i + 1) == '1' && 
+                    texto.charAt(i + 2) == '0' && 
+                    texto.charAt(i + 3) == 'e') {
+                    lexema += "x10e";
+                    estado = 'c';
+                    i += 4; // Avança os 4 caracteres de uma vez
+                } else {
+                    break; // Era só um 'x' de outra coisa, sai do número
+                }
+            } 
+            else if ((c == '+' || c == '-') && estado == 'c') {
+                // Sinal opcional logo após o 'e' ou 'x10e'
+                lexema += c;
+                estado = 's'; // 's' = sinal lido, aguardando expoente numérico
+                i++;
+            } 
+            else {
+                break; // Qualquer outro caractere encerra o número
             }
-            aux++;
         }
 
-        switch (estado) {
-            case 'i':
-                novoNum = new Palavra(lexema, "inteiro");
-                break;
-            case 'n':
-                novoNum = new Palavra(lexema, "notacao cientifica");
-                break;
-            case 'f':
-                novoNum = new Palavra(lexema, "flutuante"); //esqueci o nome certo
-                break;
-            default:
-                break;
+        // Validação de número mal-formado (ex: terminou em "123." ou "1.5e" sem completar)
+        if (estado == 'p' || estado == 'c' || estado == 's') {
+            return new Palavra(lexema, "identificador invalido"); 
         }
-        i=aux;
-        return novoNum;
+
+        // Classifica o token de acordo com o estado final
+        String tipo = "numero inteiro";
+        if (estado == 'f') tipo = "numero real";
+        if (estado == 'n') tipo = "numero em notacao cientifica";
+
+        return new Palavra(lexema, tipo);
     }
 
     private Palavra achouIdentificador() {
