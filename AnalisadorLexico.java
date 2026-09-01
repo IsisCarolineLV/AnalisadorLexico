@@ -5,6 +5,15 @@ public class AnalisadorLexico {
     private StringBuilder texto;
     private int i;
     private ArrayList<Linha> linhasErradas = new ArrayList<>();
+    private static String[] palavrasReservadas = { "ABSOLUTE", "ARRAY", "BEGIN", "CASE",
+        "CHAR", "CONST", "DIV", "DO", "DOWTO", "ELSE", "END", "EXTERNAL",
+        "FILE", "FOR", "FORWARD", "FUNC", "FUNCTION", "GOTO", "IF", "IMPLEMENTATION",
+        "INTEGER", "INTERFACE", "INTERRUPT", "LABEL", "MAIN", "NIL", "NIT",
+        "OF", "PACKED", "PROC", "PROGRAM", "REAL", "RECORD", "REPEAT", "SET",
+        "SHL", "SHR", "STRING", "THEN", "TO", "TYPE", "UNIT", "UNTIL", "USES",
+        "VAR", "WHILE", "WITH", "XOR", "READ", "WRITE", "WRITELN"};
+
+    private static String[] operacoesLogicas = {"and", "or", "not"};
 
     public AnalisadorLexico(StringBuilder texto) {
         this.texto = texto;
@@ -31,6 +40,8 @@ public class AnalisadorLexico {
                 i++;
             }else if(c==' '){
                 i++; continue;
+            }else if(c=='/'){
+                novaPalavra = achouComentario(palavras);
             }else { 
                 novaPalavra = achouSimbolo(); 
             }
@@ -46,6 +57,53 @@ public class AnalisadorLexico {
         System.out.println("------------------------------------------");
 
         return geradorLinhas(palavras);
+    }
+
+    private Palavra achouComentario(ArrayList<Palavra> palavras) {
+        String lexema = "";
+        
+        // Verifica se é o início de um comentário de bloco /*
+        if (i + 1 < texto.length() && texto.charAt(i + 1) == '*') {
+            lexema += "/*";
+            i += 2; // Pula o '/*'
+            
+            while (i < texto.length()) {
+                char c = texto.charAt(i);
+                
+                // Verifica se achou o fechamento */
+                if (i + 1 < texto.length() && c == '*' && texto.charAt(i + 1) == '/') {
+                    lexema += "*/";
+                    i += 2; // Pula o '*/'
+                    break;
+                }
+                
+                // O SEGREDO: Se achar quebra de linha, divide o token para a interface gráfica
+                if (c == '\n') {
+                    if (!lexema.isEmpty()) {
+                        // Salva o pedaço lido até aqui como comentário
+                        palavras.add(new Palavra(lexema, "comentario"));
+                    }
+                    // Cria e injeta o token "ESPACO" padrão que quebra a linha na tela
+                    palavras.add(new Palavra()); 
+                    
+                    lexema = ""; // Reseta o lexema para a próxima linha do comentário
+                    i++;
+                } else {
+                    lexema += c;
+                    i++;
+                }
+            }
+            
+            // Retorna a última parte do comentário para ser adicionada no loop principal
+            if (!lexema.isEmpty()) {
+                return new Palavra(lexema, "comentario");
+            }
+            return null;
+        }
+        
+        // Se não for '/*', então é apenas um operador de divisão '/'
+        i++;
+        return new Palavra("/", "operador aritmetico");
     }
 
     private Palavra achouSimbolo() {
@@ -92,7 +150,7 @@ public class AnalisadorLexico {
         //especiais
         if (c == '(' || c == ')' || c == ',' || c == ';' || c == ':') { 
             i++; 
-            return new Palavra(c+"", "símbolo especial"); 
+            return new Palavra(c+"", "simbolo especial"); 
         } 
 
         //fim
@@ -103,7 +161,7 @@ public class AnalisadorLexico {
 
         //se chegou ate aqui nao eh nenhum caractere resconhecido
         i++; 
-        return new Palavra(c + "", "identificador invalido");
+        return new Palavra(c + "", "identificador mal-formado");
     }
 
     private Palavra achouNumeral() {
@@ -162,7 +220,7 @@ public class AnalisadorLexico {
         Palavra novoId = null;
         String lexema = texto.charAt(i)+"";
         int aux=i+1;
-         while(aux<texto.length()){
+        while(aux<texto.length()){
             char c = texto.charAt(aux);
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')|| (c>='0' && c<='9')){
                 lexema+=c;
@@ -170,10 +228,30 @@ public class AnalisadorLexico {
                 break;
             }
             aux++;
-         }
+        }
+        i=aux;
+
+        for(String s: palavrasReservadas){
+            if(lexema.equalsIgnoreCase(s)){
+                novoId = new Palavra(lexema, "palavra reservada");
+                return novoId;
+            }
+        }
+
+        for(String o: operacoesLogicas){
+            if(lexema.equalsIgnoreCase(o)){
+                novoId = new Palavra(lexema, "operador logico");
+                return novoId;
+            }
+        }
+
+        if(lexema.equalsIgnoreCase("mod")){
+            novoId = new Palavra(lexema, "operador aritmetico");
+            return novoId;
+        }
+
         //procura lexema na lista de palavras reservadas
         novoId = new Palavra(lexema, "identificador");
-        i=aux;
         return novoId;
     }
 
