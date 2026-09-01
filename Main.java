@@ -30,6 +30,13 @@ public class Main{
     } 
 
     public static void criarTela() {
+
+        //configuracoes do rotulo
+        ToolTipManager manager = ToolTipManager.sharedInstance();
+        manager.setInitialDelay(100);  
+        manager.setDismissDelay(10000); 
+        manager.setReshowDelay(50);
+
         // Tela principal
         JFrame frame = new JFrame("Analisador Lexico");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -217,6 +224,7 @@ public class Main{
 
         Dimension tamanho = novaLinha.getPreferredSize();
         novaLinha.setMaximumSize(new Dimension(Integer.MAX_VALUE, tamanho.height));
+        
         
         return novaLinha;
 

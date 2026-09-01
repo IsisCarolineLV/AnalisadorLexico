@@ -66,6 +66,7 @@ public class Linha{
 
     public void destacarLinha(){
         refLinha.setBackground(Color.decode("#ee4141"));
+        refLinha.scrollRectToVisible(new java.awt.Rectangle(0, 0, 10, refLinha.getHeight()));
     }
 
     public void normalizaLinha(){
