@@ -215,7 +215,10 @@ public class Main{
         JPanel novaLinha = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 
         JLabel numeroLinha = new JLabel(String.valueOf(num));
-        JLabel texto = new JLabel(conteudo);
+
+        String conteudoFormatado = conteudo.replace("\t", "\u00A0\u00A0\u00A0\u00A0");
+
+        JLabel texto = new JLabel(conteudoFormatado);
 
         novaLinha.add(numeroLinha);
         novaLinha.add(texto);

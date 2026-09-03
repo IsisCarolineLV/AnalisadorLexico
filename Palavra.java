@@ -4,6 +4,7 @@ import javax.swing.JLabel;
 public class Palavra {
     String lexema;
     String token;
+    boolean sintaxeCerta=true;
     
     public Palavra(String lexema, String token) {
         this.lexema = lexema;
@@ -20,19 +21,22 @@ public class Palavra {
         if(lexema!=null ){
             JLabel novo = new JLabel(lexema);
             novo.setForeground(Color.decode(corToken()));
-            novo.setToolTipText(token);
 
-            novo.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseEntered(java.awt.event.MouseEvent e) {
-                    novo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-                }
+            if (!token.equals("tabulacao")) {
+                novo.setToolTipText(token);
 
-                @Override
-                public void mouseExited(java.awt.event.MouseEvent e) {
-                    novo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-                }
-            });
+                novo.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent e) {
+                        novo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent e) {
+                        novo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                    }
+                });
+            }
 
             return novo;
         }else{
@@ -44,8 +48,14 @@ public class Palavra {
     public String getTolken() throws Exception{
         if(token.equals("identificador invalido")) 
             throw new Exception(token+": "+lexema);
+        if(!sintaxeCerta)
+            throw new Exception("Sintaxe errada: "+ lexema + " ("+token+")");
         return token;
     } 
+
+    public void achouErro(){
+        sintaxeCerta = false;
+    }
 
     public String corToken(){
         if(token.equals("identificador")) return "#13a2cd";

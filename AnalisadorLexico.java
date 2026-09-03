@@ -36,7 +36,11 @@ public class AnalisadorLexico {
             else if(c=='\n'){
                 novaPalavra = new Palavra();
                 i++;
-            }else if(c==' '){
+            }else if (c == '\t') {
+                novaPalavra = new Palavra("\t", "tabulacao");
+                i++;
+            }else if(c==' ' || c=='\r'){
+                palavras.add(new Palavra("\t", "tabulacao"));
                 i++; continue;
             }else if(c=='/'){
                 novaPalavra = achouComentario(palavras);
@@ -202,7 +206,7 @@ public class AnalisadorLexico {
         } 
 
         //especiais
-        if (c == '(' || c == ')' || c == ',' || c == ';' || c == ':') { 
+        if (c == '(' || c == ')' || c == ',' || c == ';' || c == ':' || c=='{' || c=='}' || c=='['||c==']') { 
             i++; 
             return new Palavra(c+"", "simbolo especial"); 
         } 
