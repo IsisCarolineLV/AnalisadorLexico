@@ -43,47 +43,49 @@ public class AnalisadorSintatico {
             }
         } catch (Exception e) {
             //pular comando
+            i++;
+            while(tokens.get(i).lexema==null) {i++; if(i>=tokens.size()) return;}
+            while(!tokens.get(i).lexema.equals(".") && !tokens.get(i).lexema.equals("END")){
+                tokens.get(i).achouErro();
+                do{
+                    i++;
+                    if(i>=tokens.size()) return;
+                }while(tokens.get(i).lexema==null);
+                
+            }
         }
     }
 
     private void COMANDO_READ() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_READ'");
+        i++;
     }
 
     private void COMANDO_WRITELN() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_WRITELN'");
+        i++;
     }
 
     private void COMANDO_WRITE() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_WRITE'");
+        i++;
     }
 
     private void COMANDO_GOTO() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_GOTO'");
+        i++;
     }
 
     private void COMANDO_WHILE() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_WHILE'");
+        i++;
     }
 
     private void COMANDO_FOR() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_FOR'");
+        i++;
     }
 
     private void COMANDO_IF() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_IF'");
+        i++;
     }
 
     private void COMANDO_ATRIBUICAO() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'COMANDO_ATRIBUICAO'");
+        i++;
     }
 
 }

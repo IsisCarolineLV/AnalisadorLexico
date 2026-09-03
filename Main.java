@@ -20,6 +20,8 @@ public class Main{
 
     //botoes:
     private static JButton btnPesquisar;
+    private static JButton btnAnaliseLexica;
+    private static JButton btnAnaliseSintatica;
     private static JButton btnAnalisar;
     private static JButton btnErroAnterior;
     private static JButton btnProximoErro;
@@ -53,7 +55,13 @@ public class Main{
         organizadorH.setAlignmentX(Component.LEFT_ALIGNMENT); 
         
         btnPesquisar = new JButton("Pesquisar");
-        btnAnalisar = new JButton("Analisar");
+
+        btnAnaliseLexica = new JButton("Analise Lexica");
+        btnAnaliseLexica.setEnabled(false);
+        btnAnaliseSintatica = new JButton("Analise Sintatica");
+        btnAnaliseSintatica.setEnabled(false);
+
+        btnAnalisar = new JButton("Analise");
         btnAnalisar.setEnabled(false);
 
         btnErroAnterior = new JButton("⬆ Erro Anterior");
@@ -63,6 +71,10 @@ public class Main{
         btnProximoErro.setEnabled(false);
 
         organizadorH.add(btnPesquisar);
+        organizadorH.add(Box.createRigidArea(new Dimension(5, 0))); 
+        organizadorH.add(btnAnaliseLexica);
+        organizadorH.add(Box.createRigidArea(new Dimension(5, 0))); 
+        organizadorH.add(btnAnaliseSintatica);
         organizadorH.add(Box.createRigidArea(new Dimension(5, 0))); 
         organizadorH.add(btnAnalisar);
         organizadorH.add(Box.createRigidArea(new Dimension(5, 0)));
@@ -119,6 +131,45 @@ public class Main{
                 texto = getTexto();
             }
             btnAnalisar.setEnabled(true);
+            btnAnaliseLexica.setEnabled(true);
+        });
+
+        btnAnaliseLexica.addActionListener(e->{
+            if(caminhoAtual.equals("")){
+                areaErro.setText("Nenhum arquivo selecionado!");
+            }else{
+                analisador = new AnalisadorLexico(texto);
+                ArrayList<Linha> linhas = analisador.classificarTolkens();
+                linhasComErro = analisador.getLinhasErradas();
+                imprimirArquivo(linhas);
+                contErro=0;
+                
+                if(linhasComErro.size()>=1){
+                    btnErroAnterior.setEnabled(true);
+                    btnProximoErro.setEnabled(true);
+                    mostraErro(linhasComErro, 0);
+                }
+                btnAnaliseSintatica.setEnabled(true);
+            }
+        });
+
+        btnAnaliseSintatica.addActionListener(e->{
+            if(caminhoAtual.equals("")){
+                areaErro.setText("Nenhum arquivo selecionado!");
+            } else{
+                ArrayList<Linha> linhas = analisador.getLinhas();
+                AnalisadorSintatico analisadorSintatico = new AnalisadorSintatico(analisador.getPalavras());
+                analisadorSintatico.analisaSintaxe();
+                linhasComErro = analisador.getLinhasErradas();
+                imprimirArquivo(linhas);
+                contErro=0;
+                
+                if(linhasComErro.size()>=1){
+                    btnErroAnterior.setEnabled(true);
+                    btnProximoErro.setEnabled(true);
+                    mostraErro(linhasComErro, 0);
+                }
+            }
         });
 
         btnAnalisar.addActionListener(e->{
@@ -127,6 +178,8 @@ public class Main{
             }else{
                 analisador = new AnalisadorLexico(texto);
                 ArrayList<Linha> linhas = analisador.classificarTolkens();
+                AnalisadorSintatico analisadorSintatico = new AnalisadorSintatico(analisador.getPalavras());
+                analisadorSintatico.analisaSintaxe();
                 linhasComErro = analisador.getLinhasErradas();
                 imprimirArquivo(linhas);
                 contErro=0;

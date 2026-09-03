@@ -5,6 +5,8 @@ public class AnalisadorLexico {
     private StringBuilder texto;
     private int i;
     private ArrayList<Linha> linhasErradas = new ArrayList<>();
+    private ArrayList<Palavra> palavras;
+    private ArrayList<Linha> linhas;
     private static String[] palavrasReservadas = { "ABSOLUTE", "ARRAY", "BEGIN", "CASE",
         "CHAR", "CONST", "DIV", "DO", "DOWTO", "ELSE", "END", "EXTERNAL",
         "FILE", "FOR", "FORWARD", "FUNC", "FUNCTION", "GOTO", "IF", "IMPLEMENTATION",
@@ -19,8 +21,16 @@ public class AnalisadorLexico {
         i=0;
     }
 
+    public ArrayList<Palavra> getPalavras(){
+        return palavras;
+    }
+
+    public ArrayList<Linha> getLinhas(){
+        return linhas;
+    }
+
     public ArrayList<Linha> classificarTolkens() {
-        ArrayList<Palavra> palavras = new ArrayList<>();
+        palavras = new ArrayList<>();
 
         int tamanho = texto.length();
         i=0;
@@ -62,7 +72,8 @@ public class AnalisadorLexico {
         }
         System.out.println("------------------------------------------");
 
-        return geradorLinhas(palavras);
+        linhas = geradorLinhas(palavras);
+        return linhas;
     }
 
     private Palavra achouChar() {
